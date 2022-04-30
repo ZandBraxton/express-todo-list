@@ -6,6 +6,7 @@ const taskSchema = new Schema({
   name: String,
   priority: Number,
   completed: Boolean,
+  userId: String,
 });
 
 const Task = mongoose.model("task", taskSchema);

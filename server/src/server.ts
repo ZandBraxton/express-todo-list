@@ -6,6 +6,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import cors from "cors";
 import schema from "./schema";
+import getErrorCode from "./utils/getErrorCode";
 
 // run().catch((err) => console.log(err));
 
@@ -44,16 +45,17 @@ const PORT: number = 5000;
 console.log(PORT);
 console.log("hi");
 
-// app.use(
-//   cors({
-//     origin: process.env.CORS_ORIGIN,
-//   })
-// );
+app.use(cors());
 app.use(
   "/graphql",
   graphqlHTTP({
     graphiql: true,
     schema,
+    rootValue: schema,
+    customFormatErrorFn: (err) => {
+      const error = getErrorCode(err.message);
+      return { message: error.message, statusCode: error.statusCode };
+    },
   })
 );
 
