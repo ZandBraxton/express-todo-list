@@ -16,6 +16,7 @@ import { User } from "./models/user";
 import { Task } from "./models/tasks";
 import { Project } from "./models/projects";
 import { errorName } from "./constants/errors";
+import { getToken } from "./utils/isAuth";
 
 const UserType = new GraphQLObjectType({
   name: "User",
@@ -24,6 +25,7 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     username: { type: GraphQLString },
     password: { type: GraphQLString },
+    token: { type: GraphQLString },
   }),
 });
 
@@ -67,6 +69,21 @@ const TaskType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
+    me: {
+      type: UserType,
+      resolve(parent, args, context, info) {
+        if (context.loggedIn) {
+          return context.user;
+        } else {
+          const error = {
+            code: 403,
+            message: "User does not exist",
+          };
+          throw new Error(errorName.USER_NOT_FOUND);
+        }
+      },
+    },
+
     user: {
       type: UserType,
       args: { id: { type: GraphQLID } },
@@ -113,15 +130,42 @@ const Mutation = new GraphQLObjectType({
         password: { type: new GraphQLNonNull(GraphQLString) },
         username: { type: new GraphQLNonNull(GraphQLString) },
       },
-      resolve(parent, args) {
-        encryptPassword(args.password).then((data) => {
-          let user = new User({
-            email: args.email,
-            username: args.username,
-            password: data,
-          });
-          return user.save();
+      resolve: async (parent, args) => {
+        let user = new User({
+          email: args.email,
+          username: args.username,
+          password: await encryptPassword(args.password),
         });
+        // if (user) {
+        //   const error = {
+        //     code: 403,
+        //     message: "User already exists",
+        //   };
+        //   throw new Error(errorName.USER_ALREADY_EXISTS);
+        // }
+        try {
+          const regUser = await user.save();
+          const token = getToken(regUser);
+          return { ...regUser.toJSON(), token };
+        } catch (err) {
+          const error = {
+            code: 403,
+            message: "User does not exist",
+          };
+          throw new Error(errorName.PASSWORD_NOT_MATCH);
+        }
+
+        // encryptPassword(args.password).then((data) => {
+        //   let user = new User({
+        //     email: args.email,
+        //     username: args.username,
+        //     password: data,
+        //   });
+        //   user.save();
+        //   const token = getToken(user);
+
+        //   return { ...user, token };
+        // });
       },
     },
 
@@ -143,7 +187,8 @@ const Mutation = new GraphQLObjectType({
         const IsMatch = await comparePassword(args.password, user.password);
         console.log(IsMatch);
         if (IsMatch) {
-          return { ...user };
+          const token = getToken(user);
+          return { ...user, token };
         } else {
           const error = {
             code: 403,

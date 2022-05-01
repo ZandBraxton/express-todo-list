@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import schema from "./schema";
 import getErrorCode from "./utils/getErrorCode";
+import { getPayload } from "./utils/isAuth";
 
 // run().catch((err) => console.log(err));
 
@@ -52,6 +53,11 @@ app.use(
     graphiql: true,
     schema,
     rootValue: schema,
+    context: ({ req }) => {
+      const token = req.headers.authorization || "";
+      const { payload: user, loggedIn } = getPayload(token);
+      return { user, loggedIn };
+    },
     customFormatErrorFn: (err) => {
       const error = getErrorCode(err.message);
       return { message: error.message, statusCode: error.statusCode };
