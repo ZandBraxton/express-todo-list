@@ -8,13 +8,40 @@ const getToken = (payload) => {
   return token;
 };
 
-const getPayload = (token) => {
-  try {
-    const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    return { loggedIn: true, payload };
-  } catch (err) {
-    return { loggedIn: false };
+// const token = req.headers.authorization || "";
+//       const { payload: user, loggedIn } = getPayload(token);
+//       return { user, loggedIn };
+
+const getPayload = (req, res, next) => {
+  const token = req.get("Authorization");
+  console.log(token);
+  if (!token || token === "") {
+    req.isAuth = false;
+    return next();
   }
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  } catch (err) {
+    req.isAuth = false;
+    return next();
+  }
+  if (!decodedToken) {
+    req.isAuth = false;
+    return next();
+  }
+  req.isAuth = true;
+  req.userId = decodedToken._id;
+  next();
 };
+
+// const getPayload = (token) => {
+//   try {
+//     const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+//     return { loggedIn: true, payload };
+//   } catch (err) {
+//     return { loggedIn: false };
+//   }
+// };
 
 export { getToken, getPayload };

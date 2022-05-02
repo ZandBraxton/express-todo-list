@@ -45,19 +45,24 @@ const PORT: number = 5000;
 
 console.log(PORT);
 console.log("hi");
+let corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
+app.use(getPayload);
 app.use(
   "/graphql",
   graphqlHTTP({
     graphiql: true,
     schema,
     rootValue: schema,
-    context: ({ req }) => {
-      const token = req.headers.authorization || "";
-      const { payload: user, loggedIn } = getPayload(token);
-      return { user, loggedIn };
-    },
+    // context: ({ req }) => {
+    //   const token = req.headers.authorization || "";
+    //   const { payload: user, loggedIn } = getPayload(token);
+    //   return { user, loggedIn };
+    // },
     customFormatErrorFn: (err) => {
       const error = getErrorCode(err.message);
       return { message: error.message, statusCode: error.statusCode };

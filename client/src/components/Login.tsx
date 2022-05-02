@@ -20,8 +20,8 @@ const Login: React.FC<registerProps> = ({}) => {
     },
 
     onCompleted: ({ login }) => {
-      // localStorage.setItem(AUTH_TOKEN, login.token);
-      navigate("/");
+      localStorage.setItem(AUTH_TOKEN, login.token);
+      console.log(login);
     },
   });
 

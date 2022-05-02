@@ -20,8 +20,8 @@ const Register: React.FC<registerProps> = ({}) => {
       password: formState.password,
     },
     onCompleted: ({ register }) => {
-      // localStorage.setItem(AUTH_TOKEN, register.token);
-      navigate("/");
+      localStorage.setItem(AUTH_TOKEN, register.token);
+      console.log(register);
     },
   });
 

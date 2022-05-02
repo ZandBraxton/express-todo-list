@@ -71,16 +71,23 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     me: {
       type: UserType,
-      resolve(parent, args, context, info) {
-        if (context.loggedIn) {
-          return context.user;
-        } else {
-          const error = {
-            code: 403,
-            message: "User does not exist",
-          };
-          throw new Error(errorName.USER_NOT_FOUND);
+      resolve(parent, args, req) {
+        console.log(req.isAuth);
+        console.log(req.userId);
+        if (req.isAuth) {
+          return User.findById(req.userId);
         }
+        // if (context.loggedIn) {
+        //   console.log("Hello");
+        //   return context;
+        // } else {
+        //   const error = {
+        //     code: 403,
+        //     message: "User does not exist",
+        //   };
+        //   console.log("yup");
+        //   throw new Error(errorName.USER_NOT_FOUND);
+        // }
       },
     },
 
@@ -130,7 +137,7 @@ const Mutation = new GraphQLObjectType({
         password: { type: new GraphQLNonNull(GraphQLString) },
         username: { type: new GraphQLNonNull(GraphQLString) },
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, context, info) => {
         let user = new User({
           email: args.email,
           username: args.username,
@@ -175,7 +182,7 @@ const Mutation = new GraphQLObjectType({
         email: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: new GraphQLNonNull(GraphQLString) },
       },
-      resolve: async (parent, args) => {
+      resolve: async (parent, args, context, info) => {
         const user = await User.findOne({ email: args.email });
         if (!user) {
           const error = {
@@ -185,10 +192,9 @@ const Mutation = new GraphQLObjectType({
           throw new Error(errorName.USER_NOT_FOUND);
         }
         const IsMatch = await comparePassword(args.password, user.password);
-        console.log(IsMatch);
         if (IsMatch) {
           const token = getToken(user);
-          return { ...user, token };
+          return { ...user.toJSON(), token };
         } else {
           const error = {
             code: 403,

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "normalize.css";
 import "./assets/styles/index.scss";
 import App from "./pages/App";
+import { setContext } from "@apollo/client/link/context";
 
 import {
   ApolloClient,
@@ -10,24 +11,28 @@ import {
   ApolloProvider,
   useQuery,
   gql,
+  createHttpLink,
 } from "@apollo/client";
 
-const client = new ApolloClient({
+const link = createHttpLink({
   uri: "http://localhost:5000/graphql",
-  cache: new InMemoryCache(),
+  credentials: "same-origin",
 });
 
-client
-  .query({
-    query: gql`
-      query user {
-        users {
-          username
-        }
-      }
-    `,
-  })
-  .then((result) => console.log(result));
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("auth-token");
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? token : "",
+    },
+  };
+});
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: authLink.concat(link),
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

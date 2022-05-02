@@ -1,12 +1,13 @@
-import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 
-const GET_USERS = gql`
-  {
-    users {
+const GET_USER = gql`
+  query getMe {
+    me {
       username
+      email
+      password
     }
   }
 `;
 
-export default GET_USERS;
+export default GET_USER;
