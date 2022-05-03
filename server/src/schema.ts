@@ -73,7 +73,7 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       resolve(parent, args, req) {
         console.log(req.isAuth);
-        console.log(req.userId);
+        // console.log(req.userId);
         if (req.isAuth) {
           return User.findById(req.userId);
         }

@@ -1,0 +1,139 @@
+@import "./mixins";
+
+body {
+  height: 100vh;
+  background: rgb(34, 151, 195);
+  background: -moz-linear-gradient(
+    0deg,
+    rgba(34, 151, 195, 1) 0%,
+    rgba(191, 45, 253, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    0deg,
+    rgba(34, 151, 195, 1) 0%,
+    rgba(191, 45, 253, 1) 100%
+  );
+  background: linear-gradient(
+    0deg,
+    rgba(34, 151, 195, 1) 0%,
+    rgba(191, 45, 253, 1) 100%
+  );
+  //   background-repeat: no-repeat;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2297c3",endColorstr="#bf2dfd",GradientType=1);
+}
+
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+
+  a {
+    margin: 30px 50px;
+    text-decoration: none;
+    color: white;
+    font-size: 0.8rem;
+    text-align: center;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+form {
+  background-color: #fff;
+  display: flex;
+  flex-flow: column;
+  padding-bottom: 30px;
+  width: auto;
+  margin: 0 50px;
+  height: fit-content;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.322);
+
+  .form-head {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.6rem;
+    padding-bottom: 20px;
+  }
+
+  .input-wrapper {
+    display: flex;
+    flex-flow: column;
+    padding: 0 30px;
+    gap: 20px;
+
+    input,
+    button {
+      height: 40px;
+      background-color: #d9d9d9;
+      border: none;
+      padding: 10px;
+
+      &:focus {
+        outline: blue;
+      }
+    }
+    button {
+      background-color: rgb(184, 27, 252);
+      color: white;
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      padding: 0;
+      cursor: pointer;
+      &:hover {
+        background-color: rgb(198, 70, 253);
+      }
+    }
+
+    span {
+      font-size: 0.6rem;
+      text-align: center;
+      color: rgb(62, 10, 85);
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+@include mediumDevice() {
+  form {
+    width: 400px;
+  }
+}
+
+@include largeDevices() {
+  form {
+    width: 550px;
+  }
+}
+
+@include exLargeDevices() {
+  form {
+    width: 500px;
+    .form-head {
+      font-size: 2.4rem;
+    }
+
+    .input-wrapper {
+      button {
+        font-size: 1.4rem;
+        padding: 0;
+      }
+    }
+
+    input {
+    }
+  }
+}
+
+// @include exxLargeDevices() {
+//   form {
+//     margin: 0 1000px;
+//   }
+// }

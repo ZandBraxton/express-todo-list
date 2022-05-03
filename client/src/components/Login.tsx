@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import LOGIN_MUTATION from "../graphql/mutations/login";
 import { useMutation } from "@apollo/client";
 import { AUTH_TOKEN } from "../constants/constants";
+import "../assets/styles/login.scss";
 
 interface registerProps {}
 
@@ -21,42 +22,46 @@ const Login: React.FC<registerProps> = ({}) => {
 
     onCompleted: ({ login }) => {
       localStorage.setItem(AUTH_TOKEN, login.token);
-      console.log(login);
+      navigate("/", { replace: true });
     },
   });
 
   return (
-    <div>
+    <div className="login-wrapper">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           login();
         }}
       >
-        <label>Email</label>
-        <input
-          value={formState.email}
-          onChange={(e) =>
-            setFormState({
-              ...formState,
-              email: e.target.value,
-            })
-          }
-        />
-        <label>Password</label>
-        <input
-          value={formState.password}
-          onChange={(e) =>
-            setFormState({
-              ...formState,
-              password: e.target.value,
-            })
-          }
-        />
-        <button type="submit">Login</button>
+        <h1 className="form-head">LOGIN</h1>
+        <div className="input-wrapper">
+          <input
+            value={formState.email}
+            placeholder={"Email"}
+            onChange={(e) =>
+              setFormState({
+                ...formState,
+                email: e.target.value,
+              })
+            }
+          />
+          <input
+            value={formState.password}
+            placeholder={"Password"}
+            onChange={(e) =>
+              setFormState({
+                ...formState,
+                password: e.target.value,
+              })
+            }
+          />
+          <button type="submit">LOGIN</button>
+          <span>Forgot your password?</span>
+        </div>
       </form>
       <Link to={"/register"}>
-        Don't have an account? Click here to sign up!
+        <span>Don't have an account? Click here to sign up!</span>
       </Link>
     </div>
   );

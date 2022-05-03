@@ -8,13 +8,9 @@ const getToken = (payload) => {
   return token;
 };
 
-// const token = req.headers.authorization || "";
-//       const { payload: user, loggedIn } = getPayload(token);
-//       return { user, loggedIn };
-
 const getPayload = (req, res, next) => {
   const token = req.get("Authorization");
-  console.log(token);
+  console.log("isAuth 13" + token);
   if (!token || token === "") {
     req.isAuth = false;
     return next();
@@ -30,18 +26,10 @@ const getPayload = (req, res, next) => {
     req.isAuth = false;
     return next();
   }
+  console.log("isAuth 30" + req.isAuth);
   req.isAuth = true;
   req.userId = decodedToken._id;
   next();
 };
-
-// const getPayload = (token) => {
-//   try {
-//     const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-//     return { loggedIn: true, payload };
-//   } catch (err) {
-//     return { loggedIn: false };
-//   }
-// };
 
 export { getToken, getPayload };

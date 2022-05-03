@@ -21,3 +21,9 @@
     @content;
   }
 }
+
+@mixin exxLargeDevices() {
+  @media screen and (min-width: 1400px) {
+    @content;
+  }
+}
