@@ -1,7 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AUTH_TOKEN } from "../constants/constants";
+import { ApolloCache, useQuery } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 
 const Header = () => {
+  const client = useApolloClient();
   const navigate = useNavigate();
   const authToken = localStorage.getItem(AUTH_TOKEN);
   return (
@@ -10,8 +13,9 @@ const Header = () => {
         {authToken ? (
           <div
             className="ml1 pointer black"
-            onClick={() => {
-              localStorage.removeItem(AUTH_TOKEN);
+            onClick={async () => {
+              await localStorage.removeItem(AUTH_TOKEN);
+              client.clearStore();
               navigate(`/login`);
             }}
           >

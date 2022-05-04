@@ -1,7 +1,6 @@
 @import "./mixins";
 
-body {
-  height: 100vh;
+.form-wrapper {
   background: rgb(34, 151, 195);
   background: -moz-linear-gradient(
     0deg,
@@ -22,9 +21,6 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2297c3",endColorstr="#bf2dfd",GradientType=1);
-}
-
-.login-wrapper {
   height: 100vh;
   display: flex;
   flex-flow: column;
@@ -60,23 +56,30 @@ form {
     padding-bottom: 20px;
   }
 
-  .input-wrapper {
+  .form-content {
     display: flex;
     flex-flow: column;
     padding: 0 30px;
-    gap: 20px;
+    gap: 10px;
 
+    .input-wrapper {
+      display: flex;
+      flex-flow: column;
+    }
     input,
     button {
       height: 40px;
       background-color: #d9d9d9;
       border: none;
       padding: 10px;
+    }
 
+    input {
       &:focus {
-        outline: blue;
+        outline: 1px solid rgba(184, 27, 252, 0.842);
       }
     }
+
     button {
       background-color: rgb(184, 27, 252);
       color: white;
@@ -89,7 +92,13 @@ form {
       }
     }
 
-    span {
+    .error {
+      font-size: 0.8rem;
+      color: #b00020;
+      padding: 10px;
+    }
+
+    .forgot-password {
       font-size: 0.6rem;
       text-align: center;
       color: rgb(62, 10, 85);
@@ -131,9 +140,3 @@ form {
     }
   }
 }
-
-// @include exxLargeDevices() {
-//   form {
-//     margin: 0 1000px;
-//   }
-// }

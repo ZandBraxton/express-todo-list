@@ -4,8 +4,8 @@ let Schema = mongoose.Schema;
 
 const taskSchema = new Schema({
   name: String,
-  priority: Number,
-  completed: Boolean,
+  priority: String,
+  isCompleted: Boolean,
   userId: String,
 });
 

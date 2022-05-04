@@ -49,7 +49,7 @@ const TaskType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    priority: { type: GraphQLInt },
+    priority: { type: GraphQLString },
     isCompleted: { type: GraphQLBoolean },
     user: {
       type: new GraphQLList(UserType),
@@ -73,7 +73,7 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       resolve(parent, args, req) {
         console.log(req.isAuth);
-        // console.log(req.userId);
+        console.log(req.userId);
         if (req.isAuth) {
           return User.findById(req.userId);
         }
@@ -226,17 +226,18 @@ const Mutation = new GraphQLObjectType({
       type: TaskType,
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
-        priority: { type: new GraphQLNonNull(GraphQLInt) },
-        isCompleted: { type: new GraphQLNonNull(GraphQLBoolean) },
-        projectId: { type: GraphQLID },
+        priority: { type: new GraphQLNonNull(GraphQLString) },
+        isCompleted: { type: GraphQLBoolean },
+        // projectId: { type: GraphQLID },
         userId: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
+        console.log(args);
         let task = new Task({
           name: args.name,
           priority: args.priority,
           isCompleted: args.isCompleted,
-          projectId: args.projectId,
+          userId: args.userId,
         });
         return task.save();
       },

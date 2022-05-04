@@ -3,13 +3,16 @@ import { useNavigate, Link } from "react-router-dom";
 import LOGIN_MUTATION from "../graphql/mutations/login";
 import { useMutation } from "@apollo/client";
 import { AUTH_TOKEN } from "../constants/constants";
+import { onError } from "@apollo/client/link/error";
 import "../assets/styles/login.scss";
 
-interface registerProps {}
-
-const Login: React.FC<registerProps> = ({}) => {
+const Login: React.FC<{}> = ({}) => {
   const navigate = useNavigate();
   const [formState, setFormState] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({
     email: "",
     password: "",
   });
@@ -20,44 +23,77 @@ const Login: React.FC<registerProps> = ({}) => {
       password: formState.password,
     },
 
-    onCompleted: ({ login }) => {
+    onError: () => {
+      console.log(error);
+      switch (error?.message) {
+        case "User not found":
+          setErrors({
+            ...errors,
+            email: error.message,
+          });
+          break;
+        case "Passwords do not match":
+          setErrors({
+            ...errors,
+            password: error.message,
+          });
+          break;
+
+        default:
+          break;
+      }
+    },
+
+    onCompleted: async ({ login }) => {
+      console.log(login.token);
       localStorage.setItem(AUTH_TOKEN, login.token);
-      navigate("/", { replace: true });
+      await navigate("/", { replace: true });
     },
   });
 
   return (
-    <div className="login-wrapper">
+    <div className="form-wrapper">
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          login();
+          await setErrors({
+            email: "",
+            password: "",
+          });
+          await login();
         }}
       >
         <h1 className="form-head">LOGIN</h1>
-        <div className="input-wrapper">
-          <input
-            value={formState.email}
-            placeholder={"Email"}
-            onChange={(e) =>
-              setFormState({
-                ...formState,
-                email: e.target.value,
-              })
-            }
-          />
-          <input
-            value={formState.password}
-            placeholder={"Password"}
-            onChange={(e) =>
-              setFormState({
-                ...formState,
-                password: e.target.value,
-              })
-            }
-          />
+        <div className="form-content">
+          <div className="input-wrapper">
+            <input
+              value={formState.email}
+              placeholder={"Email"}
+              onChange={(e) =>
+                setFormState({
+                  ...formState,
+                  email: e.target.value,
+                })
+              }
+            />
+            <span className="error">{errors.email}</span>
+          </div>
+          <div className="input-wrapper">
+            <input
+              value={formState.password}
+              placeholder={"Password"}
+              onChange={(e) =>
+                setFormState({
+                  ...formState,
+                  password: e.target.value,
+                })
+              }
+            />
+            <span className="error">{errors.password}</span>
+          </div>
+
           <button type="submit">LOGIN</button>
-          <span>Forgot your password?</span>
+          <span className="forgot-password">Forgot your password?</span>
         </div>
       </form>
       <Link to={"/register"}>
