@@ -11,6 +11,7 @@ import {
   GraphQLID,
   GraphQLNonNull,
 } from "graphql";
+const GraphQlDate = require("graphql-date");
 import { encryptPassword, comparePassword } from "./utils/bcryptGen";
 import { User } from "./models/user";
 import { Task } from "./models/tasks";
@@ -26,6 +27,14 @@ const UserType = new GraphQLObjectType({
     username: { type: GraphQLString },
     password: { type: GraphQLString },
     token: { type: GraphQLString },
+    tasks: {
+      type: new GraphQLList(TaskType),
+      resolve: async (parent, args) => {
+        console.log(args);
+        const tasks = Task.find({ userId: parent.id });
+        console.log(tasks);
+      },
+    },
   }),
 });
 
@@ -49,6 +58,7 @@ const TaskType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
+    date: { type: GraphQlDate },
     priority: { type: GraphQLString },
     isCompleted: { type: GraphQLBoolean },
     user: {
@@ -108,11 +118,12 @@ const RootQuery = new GraphQLObjectType({
     },
 
     task: {
-      type: TaskType,
-      args: { id: { type: GraphQLID } },
-      resolve(parent, args) {
+      type: new GraphQLList(TaskType),
+      args: { userId: { type: GraphQLID } },
+      resolve: async (parent, args, req) => {
         //code to get data/db
-        return Task.findById(args.id);
+        const tasks = await Task.find({ userId: req.userId });
+        return tasks;
       },
     },
 
@@ -226,6 +237,7 @@ const Mutation = new GraphQLObjectType({
       type: TaskType,
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
+        date: { type: GraphQLNonNull(GraphQlDate) },
         priority: { type: new GraphQLNonNull(GraphQLString) },
         isCompleted: { type: GraphQLBoolean },
         // projectId: { type: GraphQLID },
@@ -235,6 +247,7 @@ const Mutation = new GraphQLObjectType({
         console.log(args);
         let task = new Task({
           name: args.name,
+          date: args.date,
           priority: args.priority,
           isCompleted: args.isCompleted,
           userId: args.userId,

@@ -17,15 +17,6 @@ const CreateTask: React.FC<{}> = ({}) => {
     userId: "",
   });
 
-  const [addTask, { data, loading, error }] = useMutation(ADD_TASK_MUTATION, {
-    variables: {
-      name: formState.name,
-      priority: formState.priority,
-      date: formState.date,
-      userId: formState.userId,
-    },
-  });
-
   return (
     <div className="form-wrapper">
       <form
@@ -39,11 +30,13 @@ const CreateTask: React.FC<{}> = ({}) => {
             mutation: ADD_TASK_MUTATION,
             variables: {
               name: formState.name,
+              date: formState.date,
               priority: formState.priority,
               isCompleted: false,
               userId: findUser.data.me.id,
             },
           });
+          client.clearStore();
           navigate("/");
 
           //   await login();

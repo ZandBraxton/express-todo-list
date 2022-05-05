@@ -1,0 +1,15 @@
+import { gql, useQuery } from "@apollo/client";
+
+const GET_TASKS = gql`
+  query getTask {
+    task {
+      id
+      name
+      date
+      priority
+      isCompleted
+    }
+  }
+`;
+
+export default GET_TASKS;

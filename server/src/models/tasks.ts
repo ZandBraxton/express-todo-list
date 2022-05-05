@@ -5,6 +5,7 @@ let Schema = mongoose.Schema;
 const taskSchema = new Schema({
   name: String,
   priority: String,
+  date: Date,
   isCompleted: Boolean,
   userId: String,
 });

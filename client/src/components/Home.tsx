@@ -1,33 +1,43 @@
 import { useQuery } from "@apollo/client";
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AUTH_TOKEN } from "../constants/constants";
 import GET_USER from "../graphql/queries/getUser";
 import { useIsAuth } from "../utils/useIsAuth";
-import { useApolloClient } from "@apollo/client";
+import { Tasklist } from "./Tasklist";
 import Header from "./Headers";
+import "../assets/styles/home.scss";
+import MenuIcon from "@mui/icons-material/Menu";
 const Home = () => {
-  const client = useApolloClient();
-  const { loading, error, data } = useQuery(GET_USER);
-  console.log(loading);
-  console.log(data);
+  interface Itasks {
+    name: string;
+    priority: string;
+    isCompleted: boolean;
+    __typename: string;
+  }
+  const {
+    loading: userLoading,
+    error: userError,
+    data: user,
+  } = useQuery(GET_USER);
+
   useIsAuth();
-  if (loading) {
+
+  if (userLoading) {
     return <div>...loading</div>;
   }
 
-  if (!data?.me) {
+  if (!user?.me) {
     return <div>Error</div>;
   }
 
-  const taskList = () => {};
-
   return (
-    <div>
-      <Header></Header>
-      <h2>Hello, {data?.me.username}</h2>
+    <div className="home-wrapper">
+      <header>
+        <h1>Hello, {user?.me.username}</h1>
+        <MenuIcon></MenuIcon>
+      </header>
+      {/* <hr></hr> */}
       <div className="inbox">
-        <h1 className="today">Today</h1>
+        <Tasklist></Tasklist>
       </div>
       <Link to={"/createTask"}>
         <span>Create Task</span>
