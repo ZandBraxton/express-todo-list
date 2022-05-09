@@ -59,7 +59,6 @@ const TaskType = new GraphQLObjectType({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     date: { type: GraphQlDate },
-    priority: { type: GraphQLString },
     isCompleted: { type: GraphQLBoolean },
     user: {
       type: new GraphQLList(UserType),
@@ -238,7 +237,6 @@ const Mutation = new GraphQLObjectType({
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
         date: { type: GraphQLNonNull(GraphQlDate) },
-        priority: { type: new GraphQLNonNull(GraphQLString) },
         isCompleted: { type: GraphQLBoolean },
         // projectId: { type: GraphQLID },
         userId: { type: new GraphQLNonNull(GraphQLID) },
@@ -248,11 +246,47 @@ const Mutation = new GraphQLObjectType({
         let task = new Task({
           name: args.name,
           date: args.date,
-          priority: args.priority,
           isCompleted: args.isCompleted,
           userId: args.userId,
         });
         return task.save();
+      },
+    },
+
+    editTask: {
+      type: TaskType,
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        date: { type: GraphQLNonNull(GraphQlDate) },
+        id: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      resolve: async (parent, args) => {
+        let task = await Task.findByIdAndUpdate(args.id);
+        (task.name = args.name), (task.date = args.date), task.save();
+        return task;
+      },
+    },
+
+    deleteTask: {
+      type: TaskType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      resolve: async (parent, args) => {
+        console.log(args);
+        return Task.findByIdAndDelete(args.id);
+      },
+    },
+
+    completedTask: {
+      type: TaskType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      resolve: async (parent, args) => {
+        let task = await Task.findByIdAndUpdate(args.id);
+        (task.isCompleted = !task.isCompleted), task.save();
+        return task;
       },
     },
   },

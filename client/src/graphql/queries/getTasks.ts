@@ -6,7 +6,6 @@ const GET_TASKS = gql`
       id
       name
       date
-      priority
       isCompleted
     }
   }

@@ -1,19 +1,23 @@
 import { useQuery, useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AUTH_TOKEN } from "../constants/constants";
 import GET_USER from "../graphql/queries/getUser";
 import { useIsAuth } from "../utils/useIsAuth";
 import { useApolloClient } from "@apollo/client";
 import ADD_TASK_MUTATION from "../graphql/mutations/addTask";
-const CreateTask: React.FC<{}> = ({}) => {
-  useIsAuth();
+import { coerceInputValue } from "graphql";
+import EDIT_TASK_MUTATION from "../graphql/mutations/editTask";
+const EditTask: React.FC<{}> = ({}) => {
+  const { state }: any = useLocation();
+  const formDate = new Date(state.task.date).toISOString().substring(0, 10);
+  console.log(state.task);
   const client = useApolloClient();
   const navigate = useNavigate();
   const [formState, setFormState] = useState({
-    name: "",
-    date: "",
-    userId: "",
+    name: state.task.name,
+    date: formDate,
+    id: state.task.id,
   });
 
   return (
@@ -21,17 +25,13 @@ const CreateTask: React.FC<{}> = ({}) => {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          const findUser = await client.query({
-            query: GET_USER,
-          });
-
+          console.log(formState);
           await client.mutate({
-            mutation: ADD_TASK_MUTATION,
+            mutation: EDIT_TASK_MUTATION,
             variables: {
               name: formState.name,
               date: formState.date,
-              isCompleted: false,
-              userId: findUser.data.me.id,
+              id: formState.id,
             },
           });
           client.clearStore();
@@ -40,7 +40,7 @@ const CreateTask: React.FC<{}> = ({}) => {
           //   await login();
         }}
       >
-        <h1 className="form-head">CREATE TASK</h1>
+        <h1 className="form-head">EDIT TASK</h1>
         <div className="form-content">
           <div className="input-wrapper">
             <input
@@ -69,11 +69,11 @@ const CreateTask: React.FC<{}> = ({}) => {
             />
             {/* <span className="error">{errors.email}</span> */}
           </div>
-          <button type="submit">CREATE TASK</button>
+          <button type="submit">EDIT TASK</button>
         </div>
       </form>
     </div>
   );
 };
 
-export default CreateTask;
+export default EditTask;

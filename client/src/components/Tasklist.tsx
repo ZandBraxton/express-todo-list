@@ -6,22 +6,27 @@ import { Task } from "./Task";
 import { format, isThisWeek, compareAsc, addDays } from "date-fns";
 import { useApolloClient } from "@apollo/client";
 import "../assets/styles/tasks.scss";
+import { Upcoming } from "@mui/icons-material";
 
 export const Tasklist = () => {
   const client = useApolloClient();
+  const [reload, setReload] = useState(false);
   const [todaysTasks, setTodaysTasks] = useState([] as any);
   const [weeklyTasks, setWeeklyTasks] = useState([] as any);
   const [upcomingTasks, setUpcomingTasks] = useState([] as any);
+  const [pastTasks, setPastTasks] = useState([] as any);
 
   useEffect(() => {
     getTasks();
+    setReload(false);
     // sortTasks()
-  }, []);
+  }, [reload]);
 
   const getTasks = async () => {
     let todayTask: any = [];
     let weekTask: any = [];
     let upcomingTask: any = [];
+    let pastTasks: any = [];
     const tasks = await client.query({
       query: GET_TASKS,
     });
@@ -35,19 +40,27 @@ export const Tasklist = () => {
       if (date === time) {
         todayTask.push(task);
       }
-      if (isThisWeek(utcDate) === true) {
+      if (
+        compareAsc(utcDateOnly, new Date(time)) !== -1 &&
+        isThisWeek(utcDate) === true &&
+        date !== time
+      ) {
         weekTask.push(task);
       }
       if (
-        compareAsc(utcDate, new Date(time)) !== -1 &&
+        compareAsc(utcDateOnly, new Date(time)) !== -1 &&
         isThisWeek(utcDate) === false
       ) {
         upcomingTask.push(task);
+      }
+      if (compareAsc(utcDateOnly, new Date(time)) === -1) {
+        pastTasks.push(task);
       }
     });
     setTodaysTasks(todayTask);
     setWeeklyTasks(weekTask);
     setUpcomingTasks(upcomingTask);
+    setPastTasks(pastTasks);
   };
 
   function getDate() {
@@ -57,24 +70,70 @@ export const Tasklist = () => {
   }
 
   return (
-    <div className="task-list-container">
-      <section className="task-container-home">
+    <div className="task-list-wrapper">
+      <section className="task-list-container">
         <h2 className="today">Today</h2>
-        {todaysTasks.map((task: any) => {
-          return <Task props={task} key={task.id}></Task>;
-        })}
+        {todaysTasks.length === 0 ? (
+          <div className="no-tasks">
+            <p>No tasks for today</p>
+          </div>
+        ) : (
+          <div>
+            {todaysTasks.map((task: any) => {
+              return (
+                <Task setReload={setReload} props={task} key={task.id}></Task>
+              );
+            })}
+          </div>
+        )}
       </section>
-      <section className="task-container-home">
+      <section className="task-list-container">
         <h2 className="today">This Week</h2>
-        {weeklyTasks.map((task: any) => {
-          return <Task props={task} key={task.id}></Task>;
-        })}
+        {weeklyTasks.length === 0 ? (
+          <div className="no-tasks">
+            <p>No tasks for this week</p>
+          </div>
+        ) : (
+          <div>
+            {weeklyTasks.map((task: any) => {
+              return (
+                <Task setReload={setReload} props={task} key={task.id}></Task>
+              );
+            })}
+          </div>
+        )}
       </section>
-      <section className="task-container-home">
+      <section className="task-list-container">
         <h2 className="today">Upcoming</h2>
-        {upcomingTasks.map((task: any) => {
-          return <Task props={task} key={task.id}></Task>;
-        })}
+        {upcomingTasks.length === 0 ? (
+          <div className="no-tasks">
+            <p>No upcoming tasks</p>
+          </div>
+        ) : (
+          <div>
+            {upcomingTasks.map((task: any) => {
+              return (
+                <Task setReload={setReload} props={task} key={task.id}></Task>
+              );
+            })}
+          </div>
+        )}
+      </section>
+      <section className="task-list-container">
+        <h2 className="today">Past</h2>
+        {pastTasks.length === 0 ? (
+          <div className="no-tasks">
+            <p>No prior tasks</p>
+          </div>
+        ) : (
+          <div>
+            {pastTasks.map((task: any) => {
+              return (
+                <Task setReload={setReload} props={task} key={task.id}></Task>
+              );
+            })}
+          </div>
+        )}
       </section>
     </div>
   );

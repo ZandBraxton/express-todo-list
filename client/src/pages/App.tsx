@@ -14,6 +14,7 @@ import Users from "../components/Users";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import CreateTask from "../components/createTask";
+import EditTask from "../components/editTask";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/createTask" element={<CreateTask />} />
+        <Route path="/editTask" element={<EditTask />} />
       </Routes>
     </Router>
   );

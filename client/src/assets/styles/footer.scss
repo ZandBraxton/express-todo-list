@@ -1,0 +1,18 @@
+.footer {
+  height: 50px;
+  background-color: rgba(34, 151, 195, 1);
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    svg {
+      color: white;
+      transform: scale(1.4);
+    }
+  }
+}

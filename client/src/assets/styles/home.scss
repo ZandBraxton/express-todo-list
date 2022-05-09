@@ -3,9 +3,12 @@
 
 header {
   display: flex;
-  align-items: center;
+  flex-flow: column;
+  justify-content: center;
   width: 100%;
-  height: 10vh;
+  background: rgba(34, 151, 195, 1) 0%;
+  position: fixed;
+  top: 0;
   //   background: rgb(34, 151, 195);
   //   background: -moz-linear-gradient(
   //     0deg,
@@ -27,16 +30,87 @@ header {
   //   background-repeat: no-repeat;
   //   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2297c3",endColorstr="#bf2dfd",GradientType=1);
 
+  .nav {
+    display: flex;
+    align-items: center;
+    height: 75px;
+    svg {
+      color: rgb(255, 255, 255);
+      margin-left: auto;
+      margin-right: 20px;
+    }
+  }
   h1 {
     margin: 0;
     padding: 20px 10px;
-    color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    text-shadow: 1px 1px 1px black;
   }
 
-  svg {
-    color: rgb(0, 0, 0);
-    margin-left: auto;
-    margin-right: 20px;
+  .projects {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+
+    align-items: center;
+
+    h2 {
+      padding: 0;
+      margin: 0;
+      color: rgb(255, 255, 255);
+      text-shadow: 1px 1px 1px black;
+    }
+
+    .project-list-wrapper {
+      width: 100%;
+    }
+
+    .project-list {
+      padding: 0;
+      margin-top: 1rem;
+      width: 100%;
+
+      li {
+        list-style: none;
+        color: rgb(255, 255, 255);
+        text-shadow: 1px 1px 1px black;
+        font-size: 1.2rem;
+        padding: 15px 0px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.527);
+        text-align: center;
+        &:nth-child(1) {
+          border-top: 1px solid rgba(0, 0, 0, 0.527);
+        }
+      }
+    }
+
+    .menu-buttons {
+      display: flex;
+      gap: 20px;
+      margin: 1rem 0;
+    }
+
+    .menu-option {
+      display: flex;
+      flex-flow: column;
+      align-items: center;
+      gap: 5px;
+      width: 100px;
+      padding: 12px;
+      border-radius: 12px;
+      background-color: rgba(103, 195, 228, 0.664);
+      h3 {
+        font-size: 1rem;
+        color: rgb(255, 255, 255);
+        text-shadow: 1px 1px 1px black;
+        padding: 0;
+        margin: 0;
+      }
+
+      svg {
+        color: white;
+      }
+    }
   }
 }
 
@@ -48,14 +122,21 @@ hr {
 
 .inbox {
   padding: 0 0px;
+}
 
-  .task-container-home {
-    h2 {
-      padding: 5px 10px;
-      font-size: 22px;
-      font-weight: 800;
-      border: 1px solid rgba(0, 0, 0, 0.178);
-      margin: 0;
-    }
-  }
+.hidden {
+  max-height: 0px;
+  opacity: 0;
+  pointer-events: none;
+  transition-property: max-height, opacity;
+  transition-duration: 0.3s, 0.1s;
+  transition-timing-function: ease-in-out;
+}
+
+.active {
+  max-height: fit-content;
+  opacity: 1;
+  transition-property: max-height, opacity;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
 }
