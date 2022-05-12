@@ -7,10 +7,21 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useApolloClient } from "@apollo/client";
 import COMPLETED_TASK_MUTATION from "../graphql/mutations/completedTask";
 import DELETE_TASK_MUTATION from "../graphql/mutations/deleteTask";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
-export const Task = (props: any) => {
+interface IProps {
+  props: {
+    date: Date;
+    id: string;
+    isCompleted: Boolean;
+    name: string;
+    __typename: string;
+  };
+  setReload: any;
+}
+
+export const Task: React.FC<IProps> = (props) => {
   const [isCompleted, setIsCompleted] = useState(props.props.isCompleted);
   const [isMenu, setIsMenu] = useState(false);
   const client = useApolloClient();
@@ -64,7 +75,7 @@ export const Task = (props: any) => {
             }}
           ></CloseIcon>
           <div className="menu">
-            <Link to={"/editTask"} state={{ task }}>
+            <Link to={"/edit-task"} state={{ task }}>
               <button>EDIT</button>
             </Link>
             <button

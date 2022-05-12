@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div>
-        <Link to={"/createTask"}>
+        <Link to={"/create-task"}>
           <AddBoxIcon fontSize={"large"}></AddBoxIcon>
         </Link>
       </div>

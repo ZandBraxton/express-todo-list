@@ -1,31 +1,32 @@
-import { useQuery, useMutation } from "@apollo/client";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { AUTH_TOKEN } from "../constants/constants";
-import GET_USER from "../graphql/queries/getUser";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useIsAuth } from "../utils/useIsAuth";
 import { useApolloClient } from "@apollo/client";
-import ADD_TASK_MUTATION from "../graphql/mutations/addTask";
-import { coerceInputValue } from "graphql";
 import EDIT_TASK_MUTATION from "../graphql/mutations/editTask";
+interface IformState {
+  name: string;
+  date: string;
+  id: string;
+}
+
 const EditTask: React.FC<{}> = ({}) => {
   const { state }: any = useLocation();
   const formDate = new Date(state.task.date).toISOString().substring(0, 10);
-  console.log(state.task);
   const client = useApolloClient();
   const navigate = useNavigate();
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<IformState>({
     name: state.task.name,
     date: formDate,
     id: state.task.id,
   });
+
+  useIsAuth();
 
   return (
     <div className="form-wrapper">
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          console.log(formState);
           await client.mutate({
             mutation: EDIT_TASK_MUTATION,
             variables: {
@@ -36,8 +37,6 @@ const EditTask: React.FC<{}> = ({}) => {
           });
           client.clearStore();
           navigate("/");
-
-          //   await login();
         }}
       >
         <h1 className="form-head">EDIT TASK</h1>
@@ -46,6 +45,7 @@ const EditTask: React.FC<{}> = ({}) => {
             <input
               value={formState.name}
               placeholder={"Name"}
+              required
               onChange={(e) =>
                 setFormState({
                   ...formState,
@@ -53,13 +53,13 @@ const EditTask: React.FC<{}> = ({}) => {
                 })
               }
             />
-            {/* <span className="error">{errors.email}</span> */}
           </div>
           <div className="input-wrapper">
             <input
               type={"date"}
               value={formState.date}
               placeholder={"Due Date"}
+              required
               onChange={(e) =>
                 setFormState({
                   ...formState,
@@ -67,7 +67,6 @@ const EditTask: React.FC<{}> = ({}) => {
                 })
               }
             />
-            {/* <span className="error">{errors.email}</span> */}
           </div>
           <button type="submit">EDIT TASK</button>
         </div>

@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 
 const encryptPassword = (password: string): Promise<string> =>
   new Promise((resolve, reject): void => {
-    bcrypt.genSalt(10, (err: any, salt: any) {
+    bcrypt.genSalt(10, (err: any, salt: any)  {
         if (err) {
             reject(err)
             return false

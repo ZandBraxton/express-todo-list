@@ -5,20 +5,27 @@ import { useMutation } from "@apollo/client";
 import { AUTH_TOKEN } from "../constants/constants";
 import "../assets/styles/login.scss";
 
-// interface registerProps {}
+interface Iformstate {
+  email: string;
+  username: string;
+  password: string;
+  confirmPass: string;
+}
+
 const Register: React.FC<{}> = ({}) => {
   const navigate = useNavigate();
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<Iformstate>({
     email: "",
     username: "",
     password: "",
     confirmPass: "",
   });
 
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<Iformstate>({
     email: "",
     username: "",
     password: "",
+    confirmPass: "",
   });
 
   const [register, { data, loading, error }] = useMutation(REGISTER_MUTATION, {
@@ -30,10 +37,16 @@ const Register: React.FC<{}> = ({}) => {
 
     onError: () => {
       switch (error?.message) {
-        case "User not found":
+        case "Email already exists":
           setErrors({
             ...errors,
             email: error.message,
+          });
+          break;
+        case "User already exists":
+          setErrors({
+            ...errors,
+            username: error.message,
           });
           break;
         case "Passwords do not match":
@@ -59,10 +72,17 @@ const Register: React.FC<{}> = ({}) => {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
+          if (formState.password !== formState.confirmPass) {
+            return setErrors({
+              ...errors,
+              password: "These passwords do not match!",
+            });
+          }
           await setErrors({
             email: "",
             username: "",
             password: "",
+            confirmPass: "",
           });
           await register();
         }}
@@ -71,12 +91,14 @@ const Register: React.FC<{}> = ({}) => {
         <div className="form-content">
           <div className="input-wrapper">
             <input
+              type={"email"}
               value={formState.email}
               placeholder={"Email"}
+              required
               onChange={(e) =>
                 setFormState({
                   ...formState,
-                  email: e.target.value,
+                  email: e.target.value.toLocaleLowerCase(),
                 })
               }
             />
@@ -86,10 +108,11 @@ const Register: React.FC<{}> = ({}) => {
             <input
               value={formState.username}
               placeholder={"Username"}
+              required
               onChange={(e) =>
                 setFormState({
                   ...formState,
-                  username: e.target.value,
+                  username: e.target.value.toLocaleLowerCase(),
                 })
               }
             />
@@ -99,6 +122,8 @@ const Register: React.FC<{}> = ({}) => {
             <input
               value={formState.password}
               placeholder={"Password"}
+              required
+              minLength={8}
               onChange={(e) =>
                 setFormState({
                   ...formState,
@@ -106,12 +131,14 @@ const Register: React.FC<{}> = ({}) => {
                 })
               }
             />
-            <span className="error">{errors.email}</span>
+            <span className="error">{errors.password}</span>
           </div>
           <div className="input-wrapper">
             <input
               value={formState.confirmPass}
               placeholder={"Confirm Password"}
+              required
+              minLength={8}
               onChange={(e) =>
                 setFormState({
                   ...formState,
@@ -119,7 +146,7 @@ const Register: React.FC<{}> = ({}) => {
                 })
               }
             />
-            <span className="error">{errors.email}</span>
+            <span className="error">{errors.password}</span>
           </div>
           <button type="submit">Register</button>
         </div>

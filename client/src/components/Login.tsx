@@ -6,13 +6,18 @@ import { AUTH_TOKEN } from "../constants/constants";
 import { onError } from "@apollo/client/link/error";
 import "../assets/styles/login.scss";
 
+interface Iformstate {
+  email: string;
+  password: string;
+}
+
 const Login: React.FC<{}> = ({}) => {
   const navigate = useNavigate();
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<Iformstate>({
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<Iformstate>({
     email: "",
     password: "",
   });
@@ -24,7 +29,6 @@ const Login: React.FC<{}> = ({}) => {
     },
 
     onError: () => {
-      console.log(error);
       switch (error?.message) {
         case "User not found":
           setErrors({
@@ -45,7 +49,6 @@ const Login: React.FC<{}> = ({}) => {
     },
 
     onCompleted: async ({ login }) => {
-      console.log(login.token);
       localStorage.setItem(AUTH_TOKEN, login.token);
       await navigate("/", { replace: true });
     },

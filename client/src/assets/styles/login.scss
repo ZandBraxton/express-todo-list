@@ -49,6 +49,10 @@ form {
   height: fit-content;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.322);
 
+  h1 {
+    padding: 10px;
+  }
+
   .form-head {
     text-align: center;
     font-weight: 700;
@@ -66,12 +70,17 @@ form {
       display: flex;
       flex-flow: column;
     }
+
     input,
+    select,
     button {
       height: 40px;
       background-color: #d9d9d9;
       border: none;
       padding: 10px;
+    }
+
+    select {
     }
 
     input {

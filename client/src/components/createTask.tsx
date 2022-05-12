@@ -1,21 +1,25 @@
-import { useQuery, useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AUTH_TOKEN } from "../constants/constants";
 import GET_USER from "../graphql/queries/getUser";
 import { useIsAuth } from "../utils/useIsAuth";
 import { useApolloClient } from "@apollo/client";
 import ADD_TASK_MUTATION from "../graphql/mutations/addTask";
+
+interface IformState {
+  name: string;
+  date: string;
+  userId: string;
+}
+
 const CreateTask: React.FC<{}> = ({}) => {
   useIsAuth();
   const client = useApolloClient();
   const navigate = useNavigate();
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<IformState>({
     name: "",
     date: "",
     userId: "",
   });
-
   return (
     <div className="form-wrapper">
       <form
@@ -36,8 +40,6 @@ const CreateTask: React.FC<{}> = ({}) => {
           });
           client.clearStore();
           navigate("/");
-
-          //   await login();
         }}
       >
         <h1 className="form-head">CREATE TASK</h1>
@@ -46,6 +48,7 @@ const CreateTask: React.FC<{}> = ({}) => {
             <input
               value={formState.name}
               placeholder={"Name"}
+              required
               onChange={(e) =>
                 setFormState({
                   ...formState,
@@ -60,6 +63,7 @@ const CreateTask: React.FC<{}> = ({}) => {
               type={"date"}
               value={formState.date}
               placeholder={"Due Date"}
+              required
               onChange={(e) =>
                 setFormState({
                   ...formState,

@@ -1,6 +1,25 @@
 .footer {
   height: 50px;
-  background-color: rgba(34, 151, 195, 1);
+  background: rgb(34, 151, 195);
+  background: -moz-linear-gradient(
+    0deg,
+    rgba(34, 151, 195, 1) 0%,
+    rgba(191, 45, 253, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    0deg,
+    rgba(34, 151, 195, 1) 0%,
+    rgba(191, 45, 253, 1) 100%
+  );
+  background: linear-gradient(
+    0deg,
+    rgba(34, 151, 195, 1) 0%,
+    rgba(191, 45, 253, 1) 100%
+  );
+  //   background-repeat: no-repeat;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2297c3",endColorstr="#bf2dfd",GradientType=1);
   width: 100%;
   position: fixed;
   bottom: 0;

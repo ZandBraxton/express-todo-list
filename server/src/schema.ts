@@ -15,7 +15,6 @@ const GraphQlDate = require("graphql-date");
 import { encryptPassword, comparePassword } from "./utils/bcryptGen";
 import { User } from "./models/user";
 import { Task } from "./models/tasks";
-import { Project } from "./models/projects";
 import { errorName } from "./constants/errors";
 import { getToken } from "./utils/isAuth";
 
@@ -30,24 +29,7 @@ const UserType = new GraphQLObjectType({
     tasks: {
       type: new GraphQLList(TaskType),
       resolve: async (parent, args) => {
-        console.log(args);
         const tasks = Task.find({ userId: parent.id });
-        console.log(tasks);
-      },
-    },
-  }),
-});
-
-const ProjectType = new GraphQLObjectType({
-  name: "Project",
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    description: { type: GraphQLString },
-    user: {
-      type: new GraphQLList(UserType),
-      resolve(parent, args) {
-        return [User.findById(parent.userId)];
       },
     },
   }),
@@ -66,12 +48,6 @@ const TaskType = new GraphQLObjectType({
         return [User.findById(parent.userId)];
       },
     },
-    project: {
-      type: new GraphQLList(ProjectType),
-      resolve(parent, args) {
-        return [Project.findById(parent.projectId)];
-      },
-    },
   }),
 });
 
@@ -81,22 +57,9 @@ const RootQuery = new GraphQLObjectType({
     me: {
       type: UserType,
       resolve(parent, args, req) {
-        console.log(req.isAuth);
-        console.log(req.userId);
         if (req.isAuth) {
           return User.findById(req.userId);
         }
-        // if (context.loggedIn) {
-        //   console.log("Hello");
-        //   return context;
-        // } else {
-        //   const error = {
-        //     code: 403,
-        //     message: "User does not exist",
-        //   };
-        //   console.log("yup");
-        //   throw new Error(errorName.USER_NOT_FOUND);
-        // }
       },
     },
 
@@ -104,7 +67,6 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        //code to get data/db
         return User.findById(args.id);
       },
     },
@@ -120,18 +82,8 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(TaskType),
       args: { userId: { type: GraphQLID } },
       resolve: async (parent, args, req) => {
-        //code to get data/db
         const tasks = await Task.find({ userId: req.userId });
         return tasks;
-      },
-    },
-
-    project: {
-      type: ProjectType,
-      args: { id: { type: GraphQLID } },
-      resolve(parent, args) {
-        //code to get data/db
-        return Project.findById(args.id);
       },
     },
   },
@@ -153,36 +105,27 @@ const Mutation = new GraphQLObjectType({
           username: args.username,
           password: await encryptPassword(args.password),
         });
-        // if (user) {
-        //   const error = {
-        //     code: 403,
-        //     message: "User already exists",
-        //   };
-        //   throw new Error(errorName.USER_ALREADY_EXISTS);
-        // }
         try {
           const regUser = await user.save();
           const token = getToken(regUser);
           return { ...regUser.toJSON(), token };
         } catch (err) {
-          const error = {
-            code: 403,
-            message: "User does not exist",
-          };
-          throw new Error(errorName.PASSWORD_NOT_MATCH);
+          if (err.keyPattern.email === 1) {
+            const error = {
+              code: 403,
+              message: "Email already exists",
+            };
+            throw new Error(errorName.EMAIL_ALREADY_EXISTS);
+          }
+
+          if (err.keyPattern.username === 1) {
+            const error = {
+              code: 403,
+              message: "User already exists",
+            };
+            throw new Error(errorName.USER_ALREADY_EXISTS);
+          }
         }
-
-        // encryptPassword(args.password).then((data) => {
-        //   let user = new User({
-        //     email: args.email,
-        //     username: args.username,
-        //     password: data,
-        //   });
-        //   user.save();
-        //   const token = getToken(user);
-
-        //   return { ...user, token };
-        // });
       },
     },
 
@@ -215,34 +158,15 @@ const Mutation = new GraphQLObjectType({
       },
     },
 
-    addProject: {
-      type: ProjectType,
-      args: {
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        description: { type: GraphQLString },
-        userId: { type: new GraphQLNonNull(GraphQLID) },
-      },
-      resolve(parent, args) {
-        let project = new Project({
-          name: args.name,
-          description: args.description,
-          userId: args.userId,
-        });
-        return project.save();
-      },
-    },
-
     addTask: {
       type: TaskType,
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
         date: { type: GraphQLNonNull(GraphQlDate) },
         isCompleted: { type: GraphQLBoolean },
-        // projectId: { type: GraphQLID },
         userId: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
-        console.log(args);
         let task = new Task({
           name: args.name,
           date: args.date,
@@ -273,7 +197,6 @@ const Mutation = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve: async (parent, args) => {
-        console.log(args);
         return Task.findByIdAndDelete(args.id);
       },
     },

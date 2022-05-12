@@ -1,4 +1,5 @@
 const errorName = {
+  EMAIL_ALREADY_EXISTS: "EMAIL_ALREADY_EXISTS",
   USER_ALREADY_EXISTS: "USER_ALREADY_EXISTS",
   USER_NOT_FOUND: "USER_NOT_FOUND",
   PASSWORD_NOT_MATCH: "PASSWORD_NOT_MATCH",
@@ -6,7 +7,11 @@ const errorName = {
 };
 const errorType = {
   USER_ALREADY_EXISTS: {
-    message: "User is already exists.",
+    message: "User already exists",
+    statusCode: 403,
+  },
+  EMAIL_ALREADY_EXISTS: {
+    message: "Email already exists",
     statusCode: 403,
   },
   USER_NOT_FOUND: {

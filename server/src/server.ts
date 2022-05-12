@@ -9,16 +9,6 @@ import schema from "./schema";
 import getErrorCode from "./utils/getErrorCode";
 import { getPayload } from "./utils/isAuth";
 
-// run().catch((err) => console.log(err));
-
-console.log(process.env.PORT);
-
-// async function run() {
-//   await mongoose.connect(
-//     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@todo-list.tz8jn.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
-//   );
-// }
-
 mongoose.connect(
   `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@todo-list.tz8jn.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
 );
@@ -32,19 +22,6 @@ const app = express();
 
 const PORT: number = 5000;
 
-// const schema = buildSchema(`
-//     type Query {
-//         hello: String
-//     }`);
-
-// const root = {
-//   hello: () => {
-//     return "hello world";
-//   },
-// };
-
-console.log(PORT);
-console.log("hi");
 let corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
@@ -58,11 +35,6 @@ app.use(
     graphiql: true,
     schema,
     rootValue: schema,
-    // context: ({ req }) => {
-    //   const token = req.headers.authorization || "";
-    //   const { payload: user, loggedIn } = getPayload(token);
-    //   return { user, loggedIn };
-    // },
     customFormatErrorFn: (err) => {
       const error = getErrorCode(err.message);
       return { message: error.message, statusCode: error.statusCode };

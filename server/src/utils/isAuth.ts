@@ -9,9 +9,7 @@ const getToken = (payload) => {
 };
 
 const getPayload = (req, res, next) => {
-  console.log("Being used");
   const token = req.get("Authorization");
-  console.log("isAuth 13" + token);
   if (!token || token === "") {
     req.isAuth = false;
     return next();
@@ -27,8 +25,6 @@ const getPayload = (req, res, next) => {
     req.isAuth = false;
     return next();
   }
-  console.log("isAuth 30" + req.isAuth);
-  console.log(decodedToken);
   req.isAuth = true;
   req.userId = decodedToken._id;
   next();
