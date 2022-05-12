@@ -1,7 +1,7 @@
 import { useApolloClient } from "@apollo/client";
 import { useState } from "react";
 import { AUTH_TOKEN } from "../constants/constants";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useQuery } from "@apollo/client";

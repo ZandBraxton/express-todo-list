@@ -1,13 +1,6 @@
-import React from "react";
 import "../assets/styles/App.scss";
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from "react-router-dom";
-import { AUTH_TOKEN } from "../constants/constants";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Home from "../components/Home";
 import Login from "../components/Login";

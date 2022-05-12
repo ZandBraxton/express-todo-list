@@ -1,12 +1,8 @@
 import {
-  graphql,
-  buildSchema,
   GraphQLObjectType,
   GraphQLString,
   GraphQLBoolean,
   GraphQLList,
-  GraphQLInt,
-  GraphQLScalarType,
   GraphQLSchema,
   GraphQLID,
   GraphQLNonNull,
@@ -26,12 +22,6 @@ const UserType = new GraphQLObjectType({
     username: { type: GraphQLString },
     password: { type: GraphQLString },
     token: { type: GraphQLString },
-    tasks: {
-      type: new GraphQLList(TaskType),
-      resolve: async (parent, args) => {
-        const tasks = Task.find({ userId: parent.id });
-      },
-    },
   }),
 });
 
@@ -73,7 +63,6 @@ const RootQuery = new GraphQLObjectType({
     users: {
       type: new GraphQLList(UserType),
       resolve(parent, args) {
-        //code to get data/db
         return User.find({});
       },
     },
@@ -185,7 +174,7 @@ const Mutation = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve: async (parent, args) => {
-        let task = await Task.findByIdAndUpdate(args.id);
+        let task: any = await Task.findByIdAndUpdate(args.id);
         (task.name = args.name), (task.date = args.date), task.save();
         return task;
       },
@@ -207,7 +196,7 @@ const Mutation = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve: async (parent, args) => {
-        let task = await Task.findByIdAndUpdate(args.id);
+        let task: any = await Task.findByIdAndUpdate(args.id);
         (task.isCompleted = !task.isCompleted), task.save();
         return task;
       },

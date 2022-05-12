@@ -1,6 +1,3 @@
-.home-wrapper {
-}
-
 header {
   display: flex;
   flex-flow: column;
@@ -24,7 +21,6 @@ header {
     rgba(34, 151, 195, 1) 0%,
     rgba(191, 45, 253, 1) 100%
   );
-  //   background-repeat: no-repeat;
   background-size: cover;
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2297c3",endColorstr="#bf2dfd",GradientType=1);
@@ -97,7 +93,6 @@ header {
 hr {
   width: 90%;
   border-color: rgba(255, 255, 255, 0.582);
-  //   background-color: rgba(0, 0, 0, 1);
 }
 
 .inbox {

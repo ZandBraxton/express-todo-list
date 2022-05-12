@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+interface Itask {
+  name: string;
+  date: Date;
+  isCompleted: boolean;
+  userId: string;
+}
+
 let Schema = mongoose.Schema;
 
 const taskSchema = new Schema({
@@ -9,6 +16,6 @@ const taskSchema = new Schema({
   userId: String,
 });
 
-const Task = mongoose.model("task", taskSchema);
+const Task = mongoose.model<Itask>("task", taskSchema);
 
 export { Task };

@@ -17,7 +17,6 @@
     rgba(34, 151, 195, 1) 0%,
     rgba(191, 45, 253, 1) 100%
   );
-  //   background-repeat: no-repeat;
   background-size: cover;
   background-repeat: no-repeat;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2297c3",endColorstr="#bf2dfd",GradientType=1);
@@ -143,9 +142,6 @@ form {
         font-size: 1.4rem;
         padding: 0;
       }
-    }
-
-    input {
     }
   }
 }
